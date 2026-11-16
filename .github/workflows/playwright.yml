@@ -1,0 +1,33 @@
+name: Playwright Smoke CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  playwright-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run @smoke tests against v1
+        env:
+          BASE_URL: ${{ vars.BASE_URL || 'http://localhost:5173' }}
+          QA_EMAIL: ${{ secrets.QA_EMAIL || 'qa.engineer@bluebird.id' }}
+          QA_PASSWORD: ${{ secrets.QA_PASSWORD || 'BluebirdQA2026!' }}
+        run: npx playwright test --project=chromium-v1 --grep @smoke
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
