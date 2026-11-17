@@ -4,6 +4,12 @@
   "private": true,
   "description": "Enterprise Playwright v1.56+ automation starter kit for Squadap x Bluebird Masterclass",
   "scripts": {
+    "setup:env": "node -e \"const fs=require('fs');if(!fs.existsSync('.env'))fs.copyFileSync('.env.example','.env')\"",
+    "setup:browsers": "playwright install chromium",
+    "setup": "npm install && npm run setup:env && npm run setup:browsers",
+    "setup:agents:vscode": "playwright init-agents --loop=vscode --project=chromium-v1",
+    "setup:agents:claude": "playwright init-agents --loop=claude --project=chromium-v1",
+    "setup:agents:opencode": "playwright init-agents --loop=opencode --project=chromium-v1",
     "test": "playwright test --project=chromium-v1",
     "test:v1": "playwright test --project=chromium-v1",
     "test:v2": "playwright test --project=chromium-v2",
